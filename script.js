@@ -1,1289 +1,164 @@
-// ===============================
-// MOBILE MENU
-// ===============================
-
-
-
-
-var hamburger = document.getElementById("hamburgerBtn");
-var mobileNav = document.getElementById("mobileNav");
-
-
-
-
-if (hamburger != null && mobileNav != null) {
-
-
-
-
-    hamburger.onclick = function () {
-
-
-
-
-        mobileNav.classList.toggle("active");
-    };
-
-
-
-
-}
-
-
-
-
-// =============
-// SEARCH BAR
-// =============
-
-
-
-
-var navActions = document.querySelector(".nav-actions");
-var searchButton = document.querySelectorAll(".icon-btn")[0];
-
-
-
-
-// Create search input
-var searchInput = document.createElement("input");
-searchInput.type = "text";
-searchInput.placeholder = "Search products...";
-searchInput.style.display = "none";
-searchInput.style.padding = "8px";
-searchInput.style.marginRight = "10px";
-searchInput.style.background = "#000000";
-searchInput.style.color = "#ffffff";
-searchInput.style.border = "1px solid #7a1212";
-searchInput.style.borderRadius = "5px";
-searchInput.style.outline = "none";
-
-
-
-
-// Create suggestion box
-var suggestionBox = document.createElement("div");
-suggestionBox.style.display = "none";
-suggestionBox.style.position = "absolute";
-suggestionBox.style.top = "45px";
-suggestionBox.style.left = "0";
-suggestionBox.style.width = "220px";
-suggestionBox.style.maxHeight = "220px";
-suggestionBox.style.overflowY = "auto";
-suggestionBox.style.background = "#000000";
-suggestionBox.style.border = "1px solid #7a1212";
-suggestionBox.style.color = "#ffffff";
-suggestionBox.style.zIndex = "1000";
-
-
-
-
-navActions.style.position = "relative";
-
-
-
-
-navActions.insertBefore(searchInput, navActions.firstChild);
-navActions.appendChild(suggestionBox);
-
-
-
-
-// Show / Hide Search Bar
-searchButton.onclick = function () {
-
-
-
-
-    if (searchInput.style.display == "none") {
-
-
-
-
-        searchInput.style.display = "block";
-        searchInput.focus();
-
-
-
-
-    } else {
-
-
-
-
-        searchInput.style.display = "none";
-        searchInput.value = "";
-        suggestionBox.style.display = "none";
-
-
-
-
+/* ================= CONFIG — edit these ================= */
+const CONFIG = {
+  birthdayDate: "2026-09-22T00:00:00", // his birthday — already set
+
+  letterParagraphs: [
+    "happy birthday, bebe! i hope you have the best day today because you deserve it so much. i'm really happy that i get to celebrate your birthday with you and i'm even happier that i get to be part of your life now. 𑣲",
+    "i just want you to know that i'm always proud of you and i'll always be rooting for you. i hope you get to achieve everything you're working hard for and all the things you've been praying for. you deserve all the good things coming your way.",
+    "thank you for always being you and for making me feel so loved and cared for. i'm really grateful for you and i know i've been saying this a lot but you really are a big wish come true for me. you're such a blessing in my life and your presence is something i could neveeerrr compare to anything else. you're so special to me and i treasure you more than you know. i love you so much."
+  ],
+
+  memories: [
+    {
+      num: "01",
+      title: "01 — A Moment I'll Always Remember",
+      photo: "moment.jpg",
+      note: "august 9, 2026. this day was special because it was the day you asked me to let you court me. i remember seeing how excited you were and at the same time i could tell how nervous you were when you asked me. the whole day felt so wholesome because i had no idea what was going to happen. we originally just planned to swim, watch something, eat a lot, and even wrestle but somehow the day became so much more special than i expected. it was also our first time cuddling and it honestly felt surreal. i felt so safe that i was able to fall asleep easily on your chest. i loved how caring you were the entire time, always caressing my face and making sure i was enjoying myself and was happy. it's a day i'll always remember because it was the day we officially started becoming something more."
+    },
+    {
+      num: "02",
+      title: "02 — The Little Things",
+      photo: "little-things.jpg",
+      note: "i love everything about us, especially the little things. i love how something as simple as you waking me up when we were still friends because i had an exam turned into a routine. now, you wake me up just to say good morning, tell me you're about to go to school, and remind me to start preparing for my day. it means a lot to me because i get to hear your sweet voice first thing in the morning along with your snapchat school selfies. i don't know, it's just something small that makes me really happy."
+    },
+    {
+      num: "03",
+      title: "03 — My Favorite Photo of You",
+      photo: "fav-pic.jpg",
+      note: "every photo of you is my favorite but i chose this one because this was the first photo you sent that made me realize i really did have feelings for you. you had been drinking a lot but you still made sure to update me and then you sent this photo with that smile. my heart genuinely jumped when i saw it and i remember staring at it for a long time because it made me so happy. this was also around the time you confessed to me for the second time and i didn't know what to do. it made me nervous and confused because like maybe this time, i was starting to feel the same way."
+    },
+    {
+      num: "04",
+      title: "04 — Us, Right Now",
+      photo: "us.jpg",
+      note: "this is us right now (๑ᵔ⤙ᵔ๑)  i never imagined that we would get to this stage. i never thought that the person i kept avoiding and friendzoning would end up being the person i would fall in love with. i'm so grateful that i got the chance to know you and experience what real love feels like because to me, you are that love. from the very beginning, you have never made me feel alone and you've always been consistent with your words and actions. that consistency has made my heart feel so full and has made me appreciate what we have even more. i look forward to all the memories we still have to make, including the good days, the difficult days, and all the ups and downs we'll face together. most of all, i look forward to seeing you achieve all your dreams and i hope i get to be right there beside you while you do."
     }
-
-
-
-
+  ]
 };
-
-
-
-
-// Search While Typing
-searchInput.onkeyup = function () {
-
-
-
-
-    var keyword = searchInput.value.toLowerCase();
-
-
-
-
-    suggestionBox.innerHTML = "";
-
-
-
-
-    if (keyword == "") {
-        suggestionBox.style.display = "none";
-        return;
-    }
-
-
-
-
-    var cards = document.querySelectorAll(".product-card");
-    var found = 0;
-
-
-
-
-    for (var i = 0; i < cards.length; i++) {
-
-
-
-
-        var productName = cards[i].querySelector(".product-name").innerHTML;
-
-
-
-
-        if (productName.toLowerCase().indexOf(keyword) != -1) {
-
-
-
-
-            found++;
-
-
-
-
-            var item = document.createElement("div");
-
-
-
-
-            item.innerHTML = productName;
-            item.style.padding = "10px";
-            item.style.cursor = "pointer";
-            item.style.background = "#000000";
-            item.style.color = "#ffffff";
-            item.style.borderBottom = "1px solid #520505";
-
-
-
-
-            item.onmouseover = function () {
-                this.style.background = "#8f0909";
-                this.style.color = "#ffffff";
-            };
-
-
-
-
-            item.onmouseout = function () {
-                this.style.background = "#000000";
-                this.style.color = "#ffffff";
-            };
-
-
-
-
-            item.onclick = (function (card, name) {
-
-
-
-
-                return function () {
-
-
-
-
-                    searchInput.value = name;
-                    suggestionBox.style.display = "none";
-
-
-
-
-                    card.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center"
-                    });
-
-
-
-
-                    card.style.outline = "3px solid #a40404";
-
-
-
-
-                    setTimeout(function () {
-                        card.style.outline = "";
-                    }, 2000);
-
-
-
-
-                };
-
-
-
-
-            })(cards[i], productName);
-
-
-
-
-            suggestionBox.appendChild(item);
-
-
-
-
-        }
-
-
-
-
-    }
-
-
-
-
-    if (found > 0) {
-        suggestionBox.style.display = "block";
-    } else {
-        suggestionBox.style.display = "none";
-    }
-
-
-
-
-};
-
-
-
-
-// ===============================
-// ADD TO CART
-// ===============================
-
-
-
-
-var cart = [];
-
-
-
-
-if (localStorage.getItem("cart")) {
-
-
-
-
-    cart = JSON.parse(localStorage.getItem("cart"));
-
-
-
-
+/* ========================================================= */
+
+const letterEl = document.getElementById('letter');
+CONFIG.letterParagraphs.slice().reverse().forEach(txt => {
+  const p = document.createElement('p');
+  p.textContent = txt;
+  letterEl.insertBefore(p, letterEl.firstChild);
+});
+
+const memoriesRoot = document.getElementById('memories');
+CONFIG.memories.forEach(m => {
+  const div = document.createElement('div');
+  div.className = 'memory';
+  const photoHTML = m.photo
+    ? `<img class="memory-photo" src="${m.photo}" alt="${m.title}" onerror="this.outerHTML='<div class=&quot;memory-photo placeholder&quot;>photo not found: ${m.photo}</div>'">`
+    : `<div class="memory-photo placeholder">PHOTO PLACEHOLDER</div>`;
+  div.innerHTML = `
+    <p class="memory-num">${m.num}</p>
+    <h3>${m.title}</h3>
+    ${photoHTML}
+    <p class="memory-note">${m.note}</p>
+  `;
+  memoriesRoot.appendChild(div);
+});
+
+// ---------- countdown ----------
+const target = new Date(CONFIG.birthdayDate).getTime();
+const cdEl = document.getElementById('countdown');
+function tickCountdown(){
+  const now = Date.now();
+  const diff = target - now;
+  if (diff <= 0){
+    cdEl.classList.add('arrived');
+    document.getElementById('cd-days').textContent = '⚓';
+    document.getElementById('cd-hours').textContent = '';
+    document.getElementById('cd-mins').textContent = '';
+    document.getElementById('cd-secs').textContent = '';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-days').textContent = d;
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
 }
+tickCountdown();
+setInterval(tickCountdown, 1000);
 
-
-
-
-for (var i = 0; i < cart.length; i++) {
-
-
-
-
-    if (cart[i].quantity == null) {
-
-
-
-
-        cart[i].quantity = 1;
-
-
-
-
-    }
-
-
-
-
-    if (typeof cart[i].price == "string") {
-
-
-
-
-        cart[i].price = parseFloat(cart[i].price.replace(/[^\d.]/g, ""));
-
-
-
-
-    }
-
-
-
-
+// ---------- envelope / letter ----------
+const envelope = document.getElementById('envelope');
+function openLetter(){
+  envelope.setAttribute('hidden','');
+  letterEl.classList.add('show');
 }
+envelope.addEventListener('click', openLetter);
+envelope.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') openLetter(); });
+document.getElementById('closeLetter').addEventListener('click', () => {
+  letterEl.classList.remove('show');
+  setTimeout(() => envelope.removeAttribute('hidden'), 200);
+});
 
+// ---------- candles ----------
+const candleEls = Array.from(document.querySelectorAll('.candle'));
+const blowBtn = document.getElementById('blowBtn');
+const finaleMsg = document.getElementById('finaleMessage');
 
-
-
-localStorage.setItem("cart", JSON.stringify(cart));
-
-
-
-
-var cartCount = document.querySelector(".cart-count");
-
-
-
-
-function updateCartCount() {
-
-
-
-
-    var totalItems = 0;
-
-
-
-
-    for (var i = 0; i < cart.length; i++) {
-
-
-
-
-        totalItems += cart[i].quantity;
-
-
-
-
-    }
-
-
-
-
-    if (cartCount != null) {
-
-
-
-
-        cartCount.innerHTML = totalItems;
-
-
-
-
-    }
-
-
-
-
+function snuff(el){ if (!el.classList.contains('out')) el.classList.add('out'); }
+function checkAllOut(){
+  if (candleEls.every(c => c.classList.contains('out'))){
+    finaleMsg.classList.add('show');
+    launchConfetti();
+  }
 }
-
-
-
-
-updateCartCount();
-
-
-
-
-var addButtons = document.querySelectorAll(".product-cta");
-
-
-
-
-for (var i = 0; i < addButtons.length; i++) {
-
-
-
-
-    addButtons[i].onclick = function () {
-
-
-
-
-        var card = this.parentElement;
-
-
-
-
-        while (!card.classList.contains("product-card")) {
-
-
-
-
-            card = card.parentElement;
-
-
-
-
-        }
-
-
-
-
-        var name = card.querySelector(".product-name").innerHTML;
-
-
-
-
-        var price = parseFloat(
-            card.querySelector(".product-price").innerHTML.replace(/[^\d.]/g, "")
-        );
-
-
-
-
-        var found = false;
-
-
-
-
-        for (var j = 0; j < cart.length; j++) {
-
-
-
-
-            if (cart[j].name == name) {
-
-
-
-
-                cart[j].quantity++;
-
-
-
-
-                found = true;
-
-
-
-
-                break;
-
-
-
-
-            }
-
-
-
-
-        }
-
-
-
-
-        if (!found) {
-
-
-
-
-            cart.push({
-
-
-
-
-                name: name,
-                price: price,
-                quantity: 1
-
-
-
-
-            });
-
-
-
-
-        }
-
-
-
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-
-
-
-
-        updateCartCount();
-
-
-
-
-        alert( name + " has been added to your cart.");
-
-
-
-
-    };
-
-
-
-
+candleEls.forEach(c => c.addEventListener('click', () => { snuff(c); checkAllOut(); }));
+blowBtn.addEventListener('click', () => {
+  candleEls.forEach((c, i) => setTimeout(() => { snuff(c); if(i === candleEls.length-1) checkAllOut(); }, i * 120));
+});
+
+// ---------- confetti ----------
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+const colors = ['#4D0E12', '#F5EFC6', '#A5BCD6', '#231815', '#ffffff'];
+let particles = [];
+function launchConfetti(){
+  particles = Array.from({length: 140}, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * canvas.height * 0.3,
+    r: 4 + Math.random() * 5,
+    vy: 2 + Math.random() * 3,
+    vx: -1.5 + Math.random() * 3,
+    rot: Math.random() * 360,
+    vr: -6 + Math.random() * 12,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    shape: Math.random() > 0.5 ? 'rect' : 'circle'
+  }));
+  requestAnimationFrame(animateConfetti);
 }
-
-
-
-
-// ===============================
-// VIEW CART
-// ===============================
-
-
-
-
-var cartWindow = document.createElement("div");
-
-
-
-
-cartWindow.style.display = "none";
-cartWindow.style.position = "fixed";
-cartWindow.style.top = "50%";
-cartWindow.style.left = "50%";
-cartWindow.style.transform = "translate(-50%, -50%)";
-cartWindow.style.backgroundColor = "#000000";
-cartWindow.style.color = "#ffffff";
-cartWindow.style.border = "2px solid #7a1212";
-cartWindow.style.borderRadius = "10px";
-cartWindow.style.padding = "20px";
-cartWindow.style.width = "400px";
-cartWindow.style.maxHeight = "500px";
-cartWindow.style.overflowY = "auto";
-cartWindow.style.zIndex = "1000";
-cartWindow.style.boxShadow = "0 0 20px #520505";
-
-
-
-
-document.body.appendChild(cartWindow);
-
-
-
-
-var iconButtons = document.querySelectorAll(".icon-btn");
-
-
-
-
-function displayCart() {
-
-
-
-
-    cartWindow.innerHTML = "";
-
-
-
-
-    var title = document.createElement("h2");
-    title.innerHTML = "Shopping Cart";
-    title.style.color = "#ffffff";
-    title.style.textAlign = "center";
-    title.style.marginBottom = "20px";
-
-
-
-
-    cartWindow.appendChild(title);
-
-
-
-
-    if (cart.length == 0) {
-
-
-
-
-        var empty = document.createElement("p");
-
-
-
-
-        empty.innerHTML = "Your cart is empty.";
-        empty.style.textAlign = "center";
-        empty.style.color = "#ffffff";
-
-
-
-
-        cartWindow.appendChild(empty);
-
-
-
-
-    } else {
-
-
-
-
-        var totalItems = 0;
-        var totalPrice = 0;
-
-
-
-
-        for (let i = 0; i < cart.length; i++) {
-
-
-
-
-            totalItems += cart[i].quantity;
-            totalPrice += cart[i].price * cart[i].quantity;
-
-
-
-
-            var box = document.createElement("div");
-
-
-
-
-            box.style.background = "#000000";
-            box.style.border = "1px solid #520505";
-            box.style.borderRadius = "8px";
-            box.style.padding = "12px";
-            box.style.marginBottom = "15px";
-
-
-
-
-            box.innerHTML =
-                "<h3 style='margin:0;color:#ffffff;'>" +
-                cart[i].name +
-                "</h3>" +
-                "<p style='color:#ffffff;'>Price: ₱" +
-                cart[i].price.toFixed(2) +
-                "</p>" +
-                "<p style='color:#ffffff;'>Quantity: " +
-                cart[i].quantity +
-                "</p>";
-
-
-
-
-            // Minus Button
-
-
-
-
-            var minusBtn = document.createElement("button");
-
-
-
-
-            minusBtn.innerHTML = "-";
-            minusBtn.style.marginRight = "5px";
-            minusBtn.style.padding = "6px 12px";
-            minusBtn.style.background = "#000000";
-            minusBtn.style.color = "#ffffff";
-            minusBtn.style.border = "1px solid #7a1212";
-            minusBtn.style.borderRadius = "5px";
-            minusBtn.style.cursor = "pointer";
-
-
-
-
-            minusBtn.onclick = function () {
-
-
-
-
-                cart[i].quantity--;
-
-
-
-
-                if (cart[i].quantity <= 0) {
-
-
-
-
-                    cart.splice(i, 1);
-
-
-
-
-                }
-
-
-
-
-                localStorage.setItem("cart", JSON.stringify(cart));
-
-
-
-
-                updateCartCount();
-
-
-
-
-                displayCart();
-
-
-
-
-            };
-
-
-
-
-            // Plus Button
-
-
-
-
-            var plusBtn = document.createElement("button");
-
-
-
-
-            plusBtn.innerHTML = "+";
-            plusBtn.style.marginRight = "5px";
-            plusBtn.style.padding = "6px 12px";
-            plusBtn.style.background = "#8f0909";
-            plusBtn.style.color = "#ffffff";
-            plusBtn.style.border = "1px solid #7a1212";
-            plusBtn.style.borderRadius = "5px";
-            plusBtn.style.cursor = "pointer";
-
-
-
-
-            plusBtn.onclick = function () {
-
-
-
-
-                cart[i].quantity++;
-
-
-
-
-                localStorage.setItem("cart", JSON.stringify(cart));
-
-
-
-
-                updateCartCount();
-
-
-
-
-                displayCart();
-
-
-
-
-            };
-
-
-
-
-            // Remove Button
-
-
-
-
-            var removeBtn = document.createElement("button");
-
-
-
-
-            removeBtn.innerHTML = "Remove";
-            removeBtn.style.padding = "6px 12px";
-            removeBtn.style.background = "#000000";
-            removeBtn.style.color = "#ffffff";
-            removeBtn.style.border = "1px solid #7a1212";
-            removeBtn.style.borderRadius = "5px";
-            removeBtn.style.cursor = "pointer";
-
-
-
-
-            removeBtn.onclick = function () {
-
-
-
-
-                cart.splice(i, 1);
-
-
-
-
-                localStorage.setItem("cart", JSON.stringify(cart));
-
-
-
-
-                updateCartCount();
-
-
-
-
-                displayCart();
-
-
-
-
-            };
-
-
-
-
-            box.appendChild(minusBtn);
-            box.appendChild(plusBtn);
-            box.appendChild(removeBtn);
-
-
-
-
-            cartWindow.appendChild(box);
-
-
-
-
-        }
-        // ===============================
-        // CART SUMMARY
-        // ===============================
-
-
-
-
-        var summary = document.createElement("div");
-
-
-
-
-        summary.style.marginTop = "15px";
-        summary.style.paddingTop = "10px";
-        summary.style.borderTop = "2px solid #520505";
-        summary.style.color = "#ffffff";
-
-
-
-
-        summary.innerHTML =
-            "<h3>Total Items: " + totalItems + "</h3>" +
-            "<h3>Estimated Price: ₱" + totalPrice.toFixed(2) + "</h3>";
-
-
-
-
-        cartWindow.appendChild(summary);
-
-
-
-
-        // ===============================
-        // CHECKOUT BUTTON
-        // ===============================
-
-
-
-
-        var checkoutBtn = document.createElement("button");
-
-
-
-
-        checkoutBtn.innerHTML = "Checkout";
-
-
-
-
-        checkoutBtn.style.width = "100%";
-        checkoutBtn.style.padding = "10px";
-        checkoutBtn.style.marginTop = "15px";
-        checkoutBtn.style.background = "#a40404";
-        checkoutBtn.style.color = "#ffffff";
-        checkoutBtn.style.border = "1px solid #7a1212";
-        checkoutBtn.style.borderRadius = "5px";
-        checkoutBtn.style.cursor = "pointer";
-
-
-
-
-        checkoutBtn.onmouseover = function () {
-
-
-
-
-            this.style.background = "#940808";
-
-
-
-
-        };
-
-
-
-
-        checkoutBtn.onmouseout = function () {
-
-
-
-
-            this.style.background = "#a40404";
-
-
-
-
-        };
-
-
-
-
-        checkoutBtn.onclick = function () {
-
-
-
-
-            alert("Thank you for your purchase!");
-
-
-
-
-            cart = [];
-
-
-
-
-            localStorage.setItem("cart", JSON.stringify(cart));
-
-
-
-
-            updateCartCount();
-
-
-
-
-            displayCart();
-
-
-
-
-        };
-
-
-
-
-        cartWindow.appendChild(checkoutBtn);
-
-
-
-
-    }
-
-
-
-
-    // ===============================
-    // CLOSE BUTTON
-    // ===============================
-
-
-
-
-    var closeBtn = document.createElement("button");
-
-
-
-
-    closeBtn.innerHTML = "Close";
-
-
-
-
-    closeBtn.style.width = "100%";
-    closeBtn.style.padding = "10px";
-    closeBtn.style.marginTop = "10px";
-    closeBtn.style.background = "#000000";
-    closeBtn.style.color = "#ffffff";
-    closeBtn.style.border = "1px solid #7a1212";
-    closeBtn.style.borderRadius = "5px";
-    closeBtn.style.cursor = "pointer";
-
-
-
-
-    closeBtn.onmouseover = function () {
-
-
-
-
-        this.style.background = "#520505";
-
-
-
-
-    };
-
-
-
-
-    closeBtn.onmouseout = function () {
-
-
-
-
-        this.style.background = "#000000";
-
-
-
-
-    };
-
-
-
-
-    closeBtn.onclick = function () {
-
-
-
-
-        cartWindow.style.display = "none";
-
-
-
-
-    };
-
-
-
-
-    cartWindow.appendChild(closeBtn);
-
-
-
-
-    cartWindow.style.display = "block";
-
-
-
-
+let lastT = null;
+function animateConfetti(t){
+  if(!lastT) lastT = t;
+  const dt = Math.min((t - lastT) / 16, 2);
+  lastT = t;
+  ctx.clearRect(0,0,canvas.width, canvas.height);
+  let alive = false;
+  particles.forEach(p => {
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.rot += p.vr * dt;
+    if (p.y < canvas.height + 20) alive = true;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot * Math.PI / 180);
+    ctx.fillStyle = p.color;
+    if (p.shape === 'rect') ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r * 0.6);
+    else { ctx.beginPath(); ctx.arc(0,0,p.r/2,0,Math.PI*2); ctx.fill(); }
+    ctx.restore();
+  });
+  if (alive) requestAnimationFrame(animateConfetti);
+  else ctx.clearRect(0,0,canvas.width, canvas.height);
 }
-
-
-
-
-// ===============================
-// OPEN CART
-// ===============================
-
-
-
-
-if (iconButtons.length >= 3) {
-
-
-
-
-    iconButtons[2].onclick = function () {
-
-
-
-
-        displayCart();
-
-
-
-
-    };
-
-
-
-
-}  
-
-
-
-
-// ===============================
-// PROFILE VIEW
-// ===============================
-var profileBox = document.createElement("div");
-profileBox.className = "profile-box";
-
-
-
-
-document.body.appendChild(profileBox);
-
-
-
-
-if (iconButtons.length >= 2) {
-    iconButtons[1].onclick = function () {
-
-
-        var name = localStorage.getItem("profileName");
-        var email = localStorage.getItem("profileEmail");
-
-
-
-
-        if (name && email) {
-
-
-            profileBox.innerHTML =
-                "<h2>Profile</h2>" +
-                "<h3>Name</h3>" +
-                "<p>" + name + "</p>" +
-                "<h3>Email</h3>" +
-                "<p>" + email + "</p><br>" +
-                "<button  id='editProfile'>Edit</button> " +
-                "<button  id='closeProfile'>Close</button>";
-
-
-            profileBox.style.display = "block";
-
-
-            document.getElementById("closeProfile").onclick = function () {
-                profileBox.style.display = "none";
-            };
-
-
-            document.getElementById("editProfile").onclick = function () {
-
-
-                profileBox.innerHTML =
-                    "<h2>Log in Profile</h2>" +
-
-
-
-
-                    "<label>Enter Name:</label><br>" +
-                    "<input type='text' id='profileName' placeholder='Name' value='" + name + "'><br><br>" +
-
-
-
-
-                    "<label>Enter Email:</label><br>" +
-                    "<input type='email' id='profileEmail' placeholder='Email@gmail.com'  value='" + email + "'><br><br>" +
-
-
-
-
-                    "<button id='saveProfile'>Save</button> " +
-                    "<button id='closeProfile'>Close</button>";
-
-
-
-
-                document.getElementById("closeProfile").onclick = function () {
-                    profileBox.style.display = "none";
-                };
-
-
-                document.getElementById("saveProfile").onclick = function () {
-
-
-
-
-                    localStorage.setItem("profileName",
-                        document.getElementById("profileName").value);
-
-
-
-
-                    localStorage.setItem("profileEmail",
-                        document.getElementById("profileEmail").value);
-
-
-
-
-                    iconButtons[1].click();
-                };
-
-
-            };
-
-
-        } else {
-
-
-            profileBox.innerHTML =
-                "<h2>Log in Profile</h2>" +
-
-
-
-
-                "<label>Enter Name</label><br>" +
-                "<input type='text' id='profileName' placeholder='Name'><br><br>" +
-
-
-
-
-                "<label>Enter Email</label><br>" +
-                "<input type='email' id='profileEmail' placeholder='Email@gmail.com' ><br><br>" +
-
-
-
-
-                "<button id='saveProfile'>Save</button> " +
-                "<button id='closeProfile'>Close</button>";
-
-
-
-
-            profileBox.style.display = "block";
-
-
-
-
-            document.getElementById("closeProfile").onclick = function () {
-                profileBox.style.display = "none";
-            };
-
-
-
-
-            document.getElementById("saveProfile").onclick = function () {
-
-
-
-
-                localStorage.setItem("profileName",
-                    document.getElementById("profileName").value);
-
-
-
-
-                localStorage.setItem("profileEmail",
-                    document.getElementById("profileEmail").value);
-                iconButtons[1].click(2);
-            };
-        }
-    };
-}
-
-
